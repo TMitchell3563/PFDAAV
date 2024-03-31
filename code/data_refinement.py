@@ -98,8 +98,9 @@ class DataLoader:
         else:
             print('No duplicated rows found')
 
-dl = DataLoader(filepath)
-dl.refine_data()
-dl.drop_duplicates()
-print('Saving refined data')
-dl.df.to_csv(filepath[:-4] + '_refined.csv')
+if __name__ == '__main__':
+    dl = DataLoader(filepath)
+    dl.refine_data()
+    dl.drop_duplicates()
+    print('Saving refined data')
+    dl.df.to_csv(filepath[:-4] + '_refined.csv')
