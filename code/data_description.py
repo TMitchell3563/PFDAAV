@@ -2,6 +2,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from ipywidgets import interact, widgets
+import math
 
 __name__ = "__main__"
 
@@ -22,6 +23,33 @@ class DataDescriber:
         except Exception as e:
             print('File could not be read')
             print(f'Error: {e}')
+
+    def _value_interpreter(self):
+        """ 
+        Method to read in descriptions from helper file.
+        """
+        # Read in data
+        desc_df = pd.read_excel('..\data\Teaching_File_Variable_List.xlsx')
+        desc_df.drop(0, inplace = True)
+
+        # Clean data, replacing NaN values
+        for i in range(len(desc_df['Variable Name'])):
+            try:
+                if math.isnan(desc_df.iloc[i, 0]):
+                    desc_df.iloc[i, 0] = desc_df.iloc[i - 1, 0]
+                    desc_df.iloc[i, 1] = desc_df.iloc[i - 1, 1]
+            except:
+                next
+
+        # Create columns for alphanumeric character and description
+        desc_df[['Alphanumerical', 'Desc']] = desc_df['Variable Values'].str.split('.', expand=True)
+        desc_df.drop(columns=['Variable Values'], inplace=True)
+        desc_df['Desc'] = desc_df['Desc'].str.strip()
+        desc_df.loc[desc_df['Variable Name'] == 'Student (Schoolchild or full-time student)', 'Variable Name'] = 'Student'
+        desc_df.loc[desc_df['Variable Name'] == 'Health (General health)', 'Variable Name'] = 'Health'
+
+        # Record in dictionary
+        self.variable_dict = {k:{v: s for v, s in zip(desc_df.loc[desc_df['Variable Name'] == k, 'Alphanumerical'], desc_df.loc[desc_df['Variable Name'] == k, 'Desc'])} for k in desc_df['Variable Name']}
 
     def _sort_list(self, list):
         """
@@ -59,11 +87,13 @@ class DataDescriber:
         """
         Prints the unique values for each column in dataset.
         """
+        self._value_interpreter()
         cols = [x for x in list(self.df.columns) if x not in ['Record_Number', 'Region']]
         for i in cols:
             vals = self.df[i].unique()
             vals.sort()
-            print(f'Column {i} takes values {vals}')
+            vals_int = [f'{x} ({self.variable_dict[i][str(x)]})' for x in vals]
+            print(f'Column {i} takes values {vals_int}')
 
     def _grouped_no_records(self, col1, col2, col1_vals = 'None', col2_vals = 'None', summary_stats = 'None', proportional = 'Count'):
         """
