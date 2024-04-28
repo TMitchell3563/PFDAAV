@@ -14,6 +14,20 @@ class DataLoader:
         except Exception as e:
             print('File could not be read')
             print(f'Error: {e}')
+
+    def _rename_cols(self):
+        # Create a dictionary to map current column names to new column names
+        new_column_names = {}
+        for column in self.df.columns:
+            # Split the column name by underscores and capitalize the first letter of each word
+            words = column.split('_')
+            capitalized_words = [word.capitalize() for word in words]
+            # Join the words back together with underscores
+            new_column_name = '_'.join(capitalized_words)
+            # Store the mapping in the dictionary
+            new_column_names[column] = new_column_name
+
+        self.df.rename(columns=new_column_names, inplace=True)
         
     # print error rows and drop from df
     def _error_handler(self, col, errors):
@@ -73,19 +87,19 @@ class DataLoader:
     def refine_data(self):
         self._integer_checker('Record_Number', min = 1)
         self._string_checker('Region', re.compile(r'^[A-Za-z]\d{8}$'))
-        self._known_values_checker('RESIDENCE_TYPE', ['P', 'C'])
+        self._known_values_checker('Residence_Type', ['P', 'C'])
         self._integer_checker('Family_Composition', min = 0, max = 5, include_x = True)
-        self._integer_checker('sex', min = 1, max = 2)
-        self._integer_checker('age', min = 1, max = 8)
+        self._integer_checker('Sex', min = 1, max = 2)
+        self._integer_checker('Age', min = 1, max = 8)
         self._integer_checker('Marital_Status', min = 1, max = 5)
-        self._integer_checker('student', min = 1, max = 2)
+        self._integer_checker('Student', min = 1, max = 2)
         self._integer_checker('Country_Of_Birth', min = 1, max = 2)
-        self._integer_checker('health', min = 1, max = 5)
+        self._integer_checker('Health', min = 1, max = 5)
         self._integer_checker('Ethnic_Group', min = 1, max = 6)
-        self._integer_checker('religion', min = 1, max = 9)
+        self._integer_checker('Religion', min = 1, max = 9)
         self._integer_checker('Economic_Activity', min = 1, max = 9, include_x = True)
         self._integer_checker('Occupation', min = 1, max = 9, include_x = True)
-        self._integer_checker('industry', min = 1, max = 13, include_x = True)
+        self._integer_checker('Industry', min = 1, max = 13, include_x = True)
         self._integer_checker('Hours_Worked_Per_Week', min = 1, max = 4, include_x = True)
         self._integer_checker('Approximate_Social_Grade', min = 1, max = 4, include_x = True)
     
@@ -100,6 +114,7 @@ class DataLoader:
 
 if __name__ == '__main__':
     dl = DataLoader(filepath)
+    dl._rename_cols()
     dl.refine_data()
     dl.drop_duplicates()
     print('Saving refined data')

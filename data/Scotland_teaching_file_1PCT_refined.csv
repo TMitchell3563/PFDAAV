@@ -1,4 +1,4 @@
-,Record_Number,Region,RESIDENCE_TYPE,Family_Composition,sex,age,Marital_Status,student,Country_Of_Birth,health,Ethnic_Group,religion,Economic_Activity,Occupation,industry,Hours_Worked_Per_Week,Approximate_Social_Grade
+,Record_Number,Region,Residence_Type,Family_Composition,Sex,Age,Marital_Status,Student,Country_Of_Birth,Health,Ethnic_Group,Religion,Economic_Activity,Occupation,Industry,Hours_Worked_Per_Week,Approximate_Social_Grade
 0,1,S92000003,P,1,1,4,2,2,2,2,1,5,1,5,5,4,3
 1,2,S92000003,P,0,1,3,1,2,1,2,1,1,1,1,8,3,2
 2,3,S92000003,P,1,2,4,2,2,1,3,1,1,1,4,8,2,4
