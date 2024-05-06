@@ -20,6 +20,7 @@ class DataDescriber:
         try:
             self.df = pd.read_csv(filepath)
             self.df.set_index(self.df.columns[0], drop = True, inplace = True)
+            self._value_interpreter()
         except Exception as e:
             print('File could not be read')
             print(f'Error: {e}')
@@ -87,7 +88,6 @@ class DataDescriber:
         """
         Prints the unique values for each column in dataset.
         """
-        self._value_interpreter()
         cols = [x for x in list(self.df.columns) if x not in ['Record_Number', 'Region']]
         for i in cols:
             vals = self.df[i].unique()
@@ -132,6 +132,7 @@ class DataDescriber:
             sns.heatmap(grouped_df, annot=True, cmap="YlGnBu", fmt=fmt, cbar=True, square = True, cbar_kws={'shrink': 0.5},
                     linecolor='gray', linewidth=0.2)
             return
+        # Following code same as above if statement for column 2
         if summary_stats == col2:
             if col1 == col2:
                 grouped_df.index = grouped_df.index.droplevel(1)
@@ -149,12 +150,14 @@ class DataDescriber:
             sns.heatmap(grouped_df, annot=True, cmap="YlGnBu", fmt=fmt, cbar=True, square = True, cbar_kws={'shrink': 0.5},
                         linecolor='gray', linewidth=0.2)
             return
+        # If do not want summary stats, produce standard grid
         grouped_df = grouped_df.unstack().fillna(0).astype(int)
         grouped_df.columns = grouped_df.columns.droplevel()
         sorted_cols = self._sort_list(grouped_df.columns)
         grouped_df = grouped_df.reindex(sorted_cols, axis = 1)
         fmt = 'd'
 
+        # If want proportional output, perform calculation accordingly
         if proportional == 'Proportion':
             grouped_df = grouped_df.div(grouped_df.sum().sum())
             fmt = '.2f'

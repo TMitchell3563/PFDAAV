@@ -7,7 +7,7 @@ __name__ = "__main__"
 class DataPlotter:
     def __init__(self, filepath):
         """ 
-        Method to create instance of DataPlotter class
+        Constructor for DataPlotter class
 
         Parameters:
          - filepath (str): filepath of .csv file containing data to read in
